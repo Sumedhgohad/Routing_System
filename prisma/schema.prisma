@@ -1,0 +1,35 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model SupportAgent {
+  id         String   @id @default(uuid())
+  name       String
+  email      String   @unique
+  department String
+  isActive   Boolean  @default(true)
+  tickets    Ticket[]
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}
+
+model Ticket {
+  id              String        @id @default(uuid())
+  description     String
+  category        String
+  priority        String
+  sentiment       String
+  summary         String
+  department      String
+  status          String        @default("OPEN")
+  slaDeadline     DateTime?
+  assignedAgentId String?
+  assignedAgent   SupportAgent? @relation(fields: [assignedAgentId], references: [id])
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+}
